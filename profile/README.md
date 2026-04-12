@@ -92,7 +92,7 @@ That data never leaves the home.
 
 The edge appliance handles everything the Jetson can't: multimodal understanding of audio and video, VLA planning for physical responses. Not to a server, not to an API, not to anyone. All inference runs locally, on private hardware that blends into a home. 
 
-**The engineering insight:** Real-time action requires throughput, not maximal precision—so we optimize for bandwidth, not bits. Every token requires pulling model weights from memory, more compute doesn’t help, but bandwidth does. The RTX 5090 at 1,792 GB/s delivers 200 tokens/sec sustained on Gemma 4 26B A4B (Q4_K_M), **fully matching Google's own hosted Gemini 2.5 Flash throughput**, private under 500W. For power-constrained deployments, the RTX PRO 4500 Blackwell delivers ~143 tok/sec at 190W; 75% of the throughput at 60% of the power draw, same model, same quality. At the far end, Jetson-class systems (e.g., Jetson Thor) enable silent, embedded deployments that disappear into the home, trading peak throughput for form factor.
+**The engineering insight:** Real-time action requires throughput, not maximal precision—so we optimize for bandwidth, not bits. Every token requires pulling model weights from memory, more compute doesn’t help, but bandwidth does. The RTX 5090 at 1,792 GB/s delivers 200 tokens/sec sustained on Gemma 4 26B A4B (Q4_K_M), **matching Google's own hosted Gemini 2.5 Flash throughput**, private under 500W. For power-constrained deployments, the RTX PRO 4500 Blackwell delivers ~143 tok/sec at 190W; 75% of the throughput at 60% of the power draw, same model, same quality. At the far end, Jetson-class systems (e.g., Jetson Thor) enable silent, embedded deployments that disappear into the home, trading peak throughput for form factor.
 
 Q4_K_M isn't a compromise. This is a VLA system generating action commands rather than essays. It's the right blance of quality/bandwidth/power for this use case.
 
@@ -105,6 +105,9 @@ Q4_K_M isn't a compromise. This is a VLA system generating action commands rathe
 | Power (under load) | 319W |
 | Multimodal | ✅ Vision encoder |
 | Network required | ❌ None |
+
+**What doesn't work**
+Higher precision (Q6/Q8) reduced throughput without improving action quality, so we dropped it. Human-speed interaction defines the required system performance. 
 
 #### Option 2: Away From Home
 
