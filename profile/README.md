@@ -80,22 +80,26 @@ flowchart TD
 ### Personal Edge AI Appliance (Private Cloud / <500W)
 
 - **Multimodal Understanding** — handles audio and video processing beyond on-device capability; produces text descriptions fed back into Anima
-- **VLA (Vision-Language-Action) Planning** — where a VLM produces text descriptions of a scene, a VLA grounds that understanding into a learned action policy: selecting, sequencing, and timing physical interventions. ACT (Action Chunking with Transformers) handles low-level motor execution on-device; VLA planning runs on the appliance.
+- **Spatial Memory (SAM)** — continuously builds a map of objects and their locations in the environment. Using segmentation (SAM), the robot identifies and tracks objects as it moves through space, storing this in a local, queryable spatial memory. This allows VLA planning to reference “what is where” instantly, rather than reasoning over raw perception when an action is necessary.
+- **VLA (Vision-Language-Action) Planning** — evaluates whether anything should happen at all. When an event is detected, VLA decides: no-op, act, or escalate. Ruby's rover doesn’t just react to emotion, it understands context, decides what matters, and acts (or chooses not to). Actions can be triggered by voice (“Ruby it’s time for your medicine”), schedule (2pm medication), or direct input (“I have a headache”). Given current context, including emotional state, history, and spatial memory, VLA determines the appropriate response. Responses range from simple actions (fetching an item) to escalation (notifying Mom when something seems wrong). In many cases, the correct action is no action. These behaviors aren’t hardcoded. Ruby learns them from Mom or a caregiver. Actions are demonstrated once, then trained into ACT (Action Chunking with Transformers) policies for repeatable execution. Simulation data could accelerate this, but learning happens locally.
 
-A child's emotional data — their facial expressions, voice, behavioral patterns — never leaves the house. Not to a server, not to an API, not to anyone. This is not a technical constraint. It's an ethical one. All inference runs locally, air-gapped, on hardware that fits in a home.
+Training runs overnight on the edge appliance while the child sleeps, using otherwise idle compute. The system operates in two modes: real-time during the day, improved understanding at night.
 
 #### Option 1: The Home Base
 
-Ruby lives at home. All processing stays at home. The edge appliance handles everything the Jetson can't: multimodal understanding of audio and video, VLA planning for physical responses.
+You can reset a password. You can’t reset a child’s face.
+That data never leaves the home.
 
-**The engineering insight:** memory bandwidth is the only hardware spec that matters for LLM token generation. Every token requires reading the full model weights from memory once — more compute doesn't help, only bandwidth does. The RTX 5090 at 1,792 GB/s delivers 195 tokens/sec sustained on Gemma 4 26B A4B (Q4_K_M), **fully matching Google's own hosted Gemini 2.5 Flash throughput**, fully air-gapped, under 500W. For power-constrained deployments, the RTX PRO 4500 Blackwell delivers ~143 tok/sec at 190W; 75% of the throughput at 60% of the power draw, same model, same quality.
+The edge appliance handles everything the Jetson can't: multimodal understanding of audio and video, VLA planning for physical responses. Not to a server, not to an API, not to anyone. All inference runs locally, on private hardware that blends into a home. 
 
-Q4_K_M isn't a compromise. For a VLA system generating action commands rather than essays, the quality delta vs Q8 is negligible. It's the correct operating point on the quality/bandwidth/power curve: maximum useful throughput within the mission power budget.
+**The engineering insight:** memory bandwidth is the only hardware spec that matters for LLM token generation. Every token requires reading the full model weights from memory once, and more compute doesn't help, only bandwidth does. The RTX 5090 at 1,792 GB/s delivers 195 tokens/sec sustained on Gemma 4 26B A4B (Q4_K_M), **fully matching Google's own hosted Gemini 2.5 Flash throughput**, fully air-gapped, under 500W. For power-constrained deployments, the RTX PRO 4500 Blackwell delivers ~143 tok/sec at 190W; 75% of the throughput at 60% of the power draw, same model, same quality. At the far end, Jetson-class systems (e.g., Jetson Thor) enable silent, embedded deployments that disappear into the home, trading peak throughput for form factor.
+
+Q4_K_M isn't a compromise. For a VLA system generating action commands rather than essays, the quality delta vs Q8 is negligible. It's the correct blance of quality/bandwidth/power.
 
 | Metric | Value |
 |--------|-------|
 | Model | Gemma 4 26B A4B (Q4_K_M) |
-| Sustained generation | ~195 tokens/sec |
+| Sustained generation | ~200 tokens/sec |
 | Prompt processing | ~3,800 tokens/sec |
 | VRAM | 19,214MB / 32,607MB |
 | Power (under load) | 319W |
