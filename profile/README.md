@@ -143,6 +143,6 @@ The throughput drops. The quality goes up. The power drops by 8x. That's not a f
 
 - [ ] Triage Daemon implementation (ROS2? custom Python service? other?)
 - [ ] Local LLM model selection for Jetson Orin Nano
-- [ ] Edge Appliance hardware finalization (currently private cloud placeholder)
+- [ ] SAM
 - [ ] Mom's app interface design
 - [ ] Action library — what physical responses does Ruby support? (defines ACT policy vocabulary)
