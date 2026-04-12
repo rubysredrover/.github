@@ -111,9 +111,9 @@ Higher precision (Q6/Q8) reduced throughput without improving action quality, so
 
 #### Option 2: Away From Home
 
-Ruby travels with the child. When the home base isn't available — school, travel, grandma's house, the same model runs on a laptop. Same privacy guarantee. Same air gap. Just slower. Works for astronauts and rovers wandering around Mars too.
+Ruby travels with the child. When the home base isn't available, to school, travel, grandma's house, the same model runs on a laptop. Same privacy guarantee. Just slower. Works for astronauts and rovers wandering around Mars too.
 
-**The architectural inversion:** Apple Silicon's unified memory removes the constraint that forces quantization on discrete GPUs. 64GB of unified memory means Gemma 4 26B fits at Q8, essentially lossless with 37GB to spare. The laptop actually runs *higher fidelity weights* than the home base GPU, at lower power, with the same privacy guarantee. It's slower (~25 tok/sec vs 200), but for non-time-critical VLA decisions that's well above the threshold for useful action planning. When bandwidth is constrained, we optimize for throughput (Q4). When memory is abundant, we can increase precision without sacrificing usability (Q8).
+**The architectural inversion:** Apple Silicon's unified memory removes the constraint that forces quantization on discrete GPUs. 64GB of unified memory means Gemma 4 26B fits at Q8, essentially lossless with 37GB to spare. The laptop actually runs *higher fidelity weights* than the home base GPU, at lower power, with the same privacy guarantee. It's slower (~25 tok/sec vs 200), but for non-time-critical VLA decisions that's well above the threshold for useful action planning. When bandwidth is constrained, we optimize for throughput (Q4). We don’t optimize for precision or speed, we optimize for the constraint of the environment.
 
 One `pip install mlx-lm` away from running. No CUDA. No drivers. No rack.
 
