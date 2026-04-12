@@ -92,9 +92,9 @@ That data never leaves the home.
 
 The edge appliance handles everything the Jetson can't: multimodal understanding of audio and video, VLA planning for physical responses. Not to a server, not to an API, not to anyone. All inference runs locally, on private hardware that blends into a home. 
 
-**The engineering insight:** memory bandwidth is the only hardware spec that matters for LLM token generation. Every token requires reading the full model weights from memory once, and more compute doesn't help, only bandwidth does. The RTX 5090 at 1,792 GB/s delivers 195 tokens/sec sustained on Gemma 4 26B A4B (Q4_K_M), **fully matching Google's own hosted Gemini 2.5 Flash throughput**, fully air-gapped, under 500W. For power-constrained deployments, the RTX PRO 4500 Blackwell delivers ~143 tok/sec at 190W; 75% of the throughput at 60% of the power draw, same model, same quality. At the far end, Jetson-class systems (e.g., Jetson Thor) enable silent, embedded deployments that disappear into the home, trading peak throughput for form factor.
+**The engineering insight:** Real-time action requires throughput, not maximal precision—so we optimize for bandwidth, not bits. Every token requires pulling model weights from memory, more compute doesn’t help, but bandwidth does. The RTX 5090 at 1,792 GB/s delivers 200 tokens/sec sustained on Gemma 4 26B A4B (Q4_K_M), **fully matching Google's own hosted Gemini 2.5 Flash throughput**, private under 500W. For power-constrained deployments, the RTX PRO 4500 Blackwell delivers ~143 tok/sec at 190W; 75% of the throughput at 60% of the power draw, same model, same quality. At the far end, Jetson-class systems (e.g., Jetson Thor) enable silent, embedded deployments that disappear into the home, trading peak throughput for form factor.
 
-Q4_K_M isn't a compromise. For a VLA system generating action commands rather than essays, the quality delta vs Q8 is negligible. It's the correct blance of quality/bandwidth/power.
+Q4_K_M isn't a compromise. This is a VLA system generating action commands rather than essays. It's the right blance of quality/bandwidth/power for this use case.
 
 | Metric | Value |
 |--------|-------|
@@ -110,7 +110,7 @@ Q4_K_M isn't a compromise. For a VLA system generating action commands rather th
 
 Ruby travels with the child. When the home base isn't available — school, travel, grandma's house, the same model runs on a laptop. Same privacy guarantee. Same air gap. Just slower. Works for astronauts and rovers wandering around Mars too.
 
-**The architectural inversion:** Apple Silicon's unified memory removes the constraint that forces quantization on discrete GPUs. 64GB of unified memory means Gemma 4 26B fits at Q8 — 8-bit, essentially lossless with 37GB to spare. The laptop actually runs *higher fidelity weights* than the home base GPU, at lower power, with the same privacy guarantee. It's slower (~25 tok/sec vs 195), but for non-time-critical VLA decisions that's well above the threshold for useful action planning.
+**The architectural inversion:** Apple Silicon's unified memory removes the constraint that forces quantization on discrete GPUs. 64GB of unified memory means Gemma 4 26B fits at Q8 — 8-bit, essentially lossless with 37GB to spare. The laptop actually runs *higher fidelity weights* than the home base GPU, at lower power, with the same privacy guarantee. It's slower (~25 tok/sec vs 200), but for non-time-critical VLA decisions that's well above the threshold for useful action planning.
 
 One `pip install mlx-lm` away from running. No CUDA. No drivers. No rack.
 
