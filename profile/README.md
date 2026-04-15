@@ -168,4 +168,4 @@ Other references:
 [Risi Jaiswal](https://www.linkedin.com/in/risi-jaiswal-08b4215b/)
 [Venkat Ram](https://www.linkedin.com/in/venkatrama/)
 
-![Paige from Deepmind and Ruby's Red Rover](team.jpg)
+![Paige from Deepmind and Ruby's Red Rover](team.png)
